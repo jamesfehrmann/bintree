@@ -10,6 +10,18 @@ struct TreeNode {
     int value;
     TreeNode *left, *right;
     TreeNode(int nodeValue, TreeNode *left, TreeNode *right) : value(nodeValue), left(left), right(right) {}
+    int nodeCount() {
+        int count = 1;
+        if (left != nullptr)
+            count += left->nodeCount();
+        if (right != nullptr)
+            count += right->nodeCount();
+        return count;
+    }
+    ~TreeNode() {
+        delete left;
+        delete right;
+    }
 };
 
 TreeNode *treeBuilder(int i) {
@@ -23,41 +35,56 @@ enum WalkMethod { INORDER,
                   PREORDER,
                   POSTORDER };
 
-void printNode(TreeNode *node) {
+int printNode(TreeNode *node) {
+    if (node == nullptr)
+        return 0;
     std::cout << node->value << " " << std::flush;
+    return 1;
 }
 
-void treeWalk(TreeNode *node, WalkMethod w) {
-    if (w == WalkMethod::PREORDER)
-        printNode(node);
-    if (node->value > 0)
-        treeWalk(node->left, w);
-    if (w == WalkMethod::INORDER)
-        printNode(node);
-    if (node->value > 0)
-        treeWalk(node->right, w);
-    if (w == WalkMethod::POSTORDER)
-        printNode(node);
+int treeWalk(TreeNode *node, WalkMethod w, int count = 0) {
+    if (node == nullptr)
+        return count;
+    if (w == WalkMethod::PREORDER) {
+        count += printNode(node);
+        count = treeWalk(node->left, w, count);
+        count = treeWalk(node->right, w, count);
+    } else if (w == WalkMethod::INORDER) {
+        count = treeWalk(node->left, w, count);
+        count += printNode(node);
+        count = treeWalk(node->right, w, count);
+    } else if (w == WalkMethod::POSTORDER) {
+        count = treeWalk(node->left, w, count);
+        count = treeWalk(node->right, w, count);
+        count += printNode(node);
+    }
+    return count;
 }
 
 int main() {
     std::cout << "---" << std::endl;
 
-    int h = 4;
+    int h = 5;
     TreeNode *tree = treeBuilder(h);
+    
+    std::cout << "Tree Node Count: " << tree->nodeCount() << std::endl;
 
-    std::cout << "Inorder   Traversal: ";
-    treeWalk(tree, WalkMethod::INORDER);
-    std::cout << std::endl;
+    std::cout << "Inorder Traversal: " << std::endl;
+    int c1 = treeWalk(tree, WalkMethod::INORDER);
+    std::cout << "(" << c1 << ")" << std::endl;
 
-    std::cout << "Preorder  Traversal: ";
-    treeWalk(tree, WalkMethod::PREORDER);
-    std::cout << std::endl;
+    std::cout << "Preorder Traversal: " << std::endl;
+    int c2 = treeWalk(tree, WalkMethod::PREORDER);
+    std::cout << "(" << c2 << ")" << std::endl;
 
-    std::cout << "Postorder Traversal: ";
-    treeWalk(tree, WalkMethod::POSTORDER);
-    std::cout << std::endl;
+    std::cout << "Postorder Traversal: " << std::endl;
+    int c3 = treeWalk(tree, WalkMethod::POSTORDER);
+    std::cout << "(" << c3 << ")" << std::endl;
 
     std::cout << "---" << std::endl;
+
+    delete tree;
+    tree = nullptr;
+
     return 0;
 }
