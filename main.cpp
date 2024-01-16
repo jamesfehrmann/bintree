@@ -66,7 +66,7 @@ int main() {
 
     int h = 5;
     TreeNode *tree = treeBuilder(h);
-    
+
     std::cout << "Tree Node Count: " << tree->nodeCount() << std::endl;
 
     std::cout << "Inorder Traversal: " << std::endl;
