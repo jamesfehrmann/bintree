@@ -64,7 +64,7 @@ int treeWalk(TreeNode *node, WalkMethod w, int count = 0) {
 int main() {
     std::cout << "---" << std::endl;
 
-    int h = 5;
+    int h = 4;
     TreeNode *tree = treeBuilder(h);
 
     std::cout << "Tree Node Count: " << tree->nodeCount() << std::endl;
